@@ -1,0 +1,82 @@
+---
+# setting could be 'centralized', 'lb-at-clients' or 'lb-at-server'
+setting: 'lb-at-server'
+# control
+control_fl:
+  num_clients: 100
+  active_rate: 0.1
+  data_split_mode: 'iid' 
+  # data_split_mode: 'non-iid-d-0.3'
+  global_ft: 1 
+  global_pseudo_lb: 2 # 1 means all-sample batch, 2 means pseudo-lb batch.
+  sbn: 2 # 0 means no sBN, 1 means server only and 2 means both server and clients
+control_ssl:
+  # algorithm: 'fixmatch'
+  algorithm: 'flfl'
+  num_labels: 40
+  mixup: 0 # 0 means no mixup, 1 is mixup without replacement, 2 is mixup with replacement
+control_sam:
+  opt: 'asam'
+  rho: 0.1
+
+# data
+data:
+  name: cifar10
+  num_classes: 10
+  img_shape: [3, 32, 32]
+  crop_ratio: 0.875
+# For specific algorithm:
+
+# FLFL
+use_weak: False
+flfl_T: 1.0
+# CAT
+ulb_ratio: 7
+use_cat: False
+hard_label: True
+T: 0.5
+ema_p: 0.999
+use_quantile: False
+ulb_loss_ratio: 1.0
+clip_thresh: False
+alpha: 0.75
+
+model:
+  name: wresnet28x2
+  type: wresnet
+  depth: 28
+  widen_factor: 2
+  drop_rate: 0.0
+# experiment
+use_fedavg: 0
+server_pretrain: 1
+num_rounds: 800
+num_epochs: 5
+batch_size: 10
+ulb_batch_size: 32
+eval_batch_size: 2048
+maskout_ulb: False
+# optimizer
+optim_name: SGD
+lr: 0.03
+weight_decay: 0.0005
+momentum: 0.9
+nesterov: True
+# lr_scheduler
+scheduler_name: CosineAnnealingLR
+# auxiliary
+num_workers: 2
+seed: 0
+num_experiments: 1
+device: cuda:0
+world_size: 1
+resume_mode: 0
+verbose: False
+debug: False
+eval_only: False
+log:
+  entity: 'submission'
+  project: 'submission' 
+  note: ''
+  mode: 'disabled' # could be 'online', 'offline', or 'disabled'
+  loss_vis_interval: 0
